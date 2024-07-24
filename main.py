@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.by import By
+import time
 from Trie import Trie
 
 def readWordsFromFile(file_path):
@@ -45,5 +46,13 @@ if __name__ == "__main__":
     for word in words:
         trie.insert(word)
 
-    valid_words = trie.formWords(letters, centerLetter)
-    print(valid_words)
+    validWords = trie.formWords(letters, centerLetter)
+
+    driver.execute_script("document.getElementById('testword-value').type = arguments[0];", 'visible')
+    submitButton = driver.find_element(By.ID, 'submit_button')
+
+    # Iterate over the list of words and interact with the input field
+    for word in validWords:
+        driver.execute_script("document.getElementById('testword-value').value = arguments[0];", word)
+        submitButton.click()
+        time.sleep(1)
